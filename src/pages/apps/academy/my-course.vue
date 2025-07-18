@@ -1,5 +1,5 @@
 <script setup>
-import { VideoPlayer } from '@videojs-player/vue'
+//import { VideoPlayer } from '@videojs-player/vue'
 import AcademyMyCourses from '@/views/apps/academy/AcademyMyCourses.vue'
 import boyAppAcademy from '@images/illustrations/boy-app-academy.png'
 import girlAppAcademy from '@images/illustrations/girl-app-academy.png'

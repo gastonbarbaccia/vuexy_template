@@ -118,4 +118,14 @@ export default defineConfig({
       './src/**/*.vue',
     ],
   },
+  server: {
+    host: true,
+    port: parseInt(process.env.PORT) || 5173,
+    allowedHosts: [
+      'datametrix-staging-frontend-156826467324.europe-west1.run.app',
+      'datametrix-develop-frontend-156826467324.europe-west1.run.app',
+      'localhost',
+      '127.0.0.1',
+    ],
+  },
 })
