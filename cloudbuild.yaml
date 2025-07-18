@@ -1,0 +1,42 @@
+substitutions:
+  _AR_HOSTNAME: gcr.io
+  _AR_PROJECT_ID: notion-447010
+  _AR_REPOSITORY: cloud-run-source-deploy
+  _DEPLOY_REGION: europe-west1
+  _PLATFORM: managed
+  _SERVICE_NAME: datametrix-staging-frontend
+  _APP_NAME: datametrix-staging-frontend
+
+steps:
+  # Build de la imagen Docker
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - '-f'
+      - 'dev.Dockerfile'
+      - '-t'
+      - '${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_APP_NAME}:${BRANCH_NAME}-${SHORT_SHA}'
+      - .
+
+  # Push al Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - '${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_APP_NAME}:$BRANCH_NAME-$SHORT_SHA'
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [
+      'run', 'deploy', '${_SERVICE_NAME}',
+      '--image', '${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_APP_NAME}:$BRANCH_NAME-$SHORT_SHA',
+      '--region', '${_DEPLOY_REGION}',
+      '--platform', '${_PLATFORM}',
+      '--allow-unauthenticated',
+      '--ingress=all'
+    ]
+
+images:
+  - '${_AR_HOSTNAME}/${_AR_PROJECT_ID}/${_AR_REPOSITORY}/${_APP_NAME}:$BRANCH_NAME-$SHORT_SHA'
+
+options:
+  defaultLogsBucketBehavior: REGIONAL_USER_OWNED_BUCKET
